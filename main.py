@@ -1,71 +1,45 @@
-"""Орден Тихой Козы — симулятор культа. Точка входа и игровой цикл."""
+"""Орден Тихой Козы — симулятор культа (консольная версия)."""
 from __future__ import annotations
 
-import random
 import sys
 
-from content.events import EVENTS
 from game import ui
-from game.engine import (
-    WIN_DAY, apply_effects, check_defeat, create_cult, daily_tick, pick_event,
-)
-from game.models import resolve
+from game.session import GameSession
 
 
-def snapshot(cult) -> dict[str, int]:
-    return {
-        "Вера": cult.faith,
-        "Стабильность": cult.stability,
-        "Еда": cult.food,
-        "Паства": len(cult.followers),
-    }
-
-
-def play(seed=None, ask=ui.ask_choice, pause=ui.pause) -> bool:
-    """Одна партия. Возвращает True при победе. ask/pause можно подменить в тестах."""
-    rng = random.Random(seed)
-    cult = create_cult(rng)
+def play(seed=None, ask=ui.ask_choice, pause=ui.pause, setup=ui.setup) -> bool:
+    """Одна партия. Возвращает True при победе. ask/pause/setup можно подменить в тестах."""
+    game = GameSession(seed)
+    cult = game.cult
+    setup(cult)  # название культа и имена паствы
     ui.intro(cult)
+    game.start()
 
-    while cult.day <= WIN_DAY:
+    while True:
         ui.show_status(cult)
-        for line in daily_tick(cult, rng):
+        for line in game.messages:
             ui.say(line)
-
-        ending = check_defeat(cult)
-        if ending:
-            ui.game_over(ending, cult)
+        if game.phase == "over":  # поражение уже при утреннем подсчёте
+            ui.game_over(game.ending, cult)
             return False
 
-        event = pick_event(cult, EVENTS, rng)
-        if event:
-            cult.subject = event.subject(cult) if event.subject else None
-            ui.say(resolve(event.text, cult))
-            choice = ask(event.choices)
+        ui.say(game.event_text)
+        if game.phase == "event":
+            choices = game.event.choices
+            choice = ask(choices, cult)
+            index = next(i for i, c in enumerate(choices) if c is choice)
+            game.choose(index)
+            ui.say(game.outcome)
+            ui.show_changes(game.changes)
+            if game.phase == "over":
+                ui.game_over(game.ending, cult)
+                return False
 
-            before = snapshot(cult)
-            apply_effects(cult, choice.effects, rng)
-            if choice.action:
-                choice.action(cult, rng)
-
-            cult.last_event = event.id
-            if event.once:
-                cult.seen_events.add(event.id)
-
-            ui.say(resolve(choice.outcome, cult))
-            ui.show_changes(before, snapshot(cult))
-            cult.subject = None
-
-        ending = check_defeat(cult)
-        if ending:
-            ui.game_over(ending, cult)
-            return False
-
-        cult.day += 1
         pause()
-
-    ui.victory(cult)
-    return True
+        game.next_day()
+        if game.phase == "won":
+            ui.victory(cult)
+            return True
 
 
 if __name__ == "__main__":

@@ -1,0 +1,105 @@
+:root {
+  color-scheme: dark;
+  --bg: #14110f;
+  --card: #1d1814;
+  --card-2: #272019;
+  --line: #3b3128;
+  --text: #ece3d4;
+  --muted: #a69885;
+  --amber: #e2a93f;
+  --teal: #5fb0a3;
+  --red: #d4644c;
+  --green: #86b86a;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(1100px 520px at 50% -180px, #2d2118, var(--bg));
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.55;
+}
+
+#app { max-width: 1040px; margin: 0 auto; padding: 20px 16px 56px; }
+.loading { text-align: center; color: var(--muted); margin-top: 20vh; }
+
+/* ── шапка ── */
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+.sub { margin: 0 0 2px; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.cult-name { margin: 0; overflow-wrap: anywhere; font-family: var(--serif); font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 600; color: var(--amber); }
+.top > div:first-child { flex: 1; min-width: 0; }
+.progress { margin-top: 8px; width: 100%; max-width: 320px; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.progress .fill { height: 100%; background: var(--amber); }
+
+/* ── раскладка ── */
+.layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 820px) { .layout { grid-template-columns: 1fr 300px; align-items: start; } }
+.side { display: grid; gap: 16px; }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.story { min-height: 280px; }
+.story h2 { margin: 0 0 10px; font-family: var(--serif); font-size: 1.4rem; }
+.story h2.doom { color: var(--red); }
+.story h2.win { color: var(--green); }
+
+/* ── текст истории ── */
+.lead { font-family: var(--serif); font-size: 1.15rem; margin: 0 0 16px; }
+.muted { color: var(--muted); }
+.log { margin: 0 0 8px; font-size: .92rem; color: var(--muted); }
+.outcome { font-family: var(--serif); font-size: 1.1rem; margin: 16px 0 12px; padding-left: 14px; border-left: 3px solid var(--amber); }
+.notice { margin: 0 0 14px; padding: 10px 12px; border-radius: 8px; background: #3a2a1b; color: var(--amber); font-size: .9rem; }
+
+/* ── выборы ── */
+.choices { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.choice {
+  display: flex; gap: 12px; align-items: baseline; width: 100%; text-align: left;
+  padding: 12px 14px; font: inherit; color: var(--text);
+  background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; cursor: pointer;
+}
+.choice:hover:not(:disabled) { border-color: var(--amber); }
+.choice .num { flex: none; width: 1.6em; height: 1.6em; line-height: 1.6em; text-align: center; border-radius: 50%; background: var(--line); color: var(--amber); font-size: .85rem; }
+
+/* ── кнопки ── */
+button { font: inherit; }
+button:disabled { opacity: .5; cursor: default; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.primary { margin-top: 8px; padding: 11px 20px; border: 0; border-radius: 10px; background: var(--amber); color: #20160a; font-weight: 600; cursor: pointer; }
+.primary:hover:not(:disabled) { filter: brightness(1.08); }
+.ghost { padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; }
+.ghost:hover:not(:disabled) { color: var(--text); border-color: var(--muted); }
+.small { font-size: .85rem; white-space: nowrap; }
+.icon { margin-left: 8px; min-width: 36px; min-height: 36px; padding: 0 6px; border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: .7em; vertical-align: middle; }
+.icon:hover { color: var(--amber); }
+
+/* ── изменения ── */
+.changes { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+.chip { padding: 2px 10px; border-radius: 999px; font-size: .85rem; background: var(--card-2); border: 1px solid var(--line); }
+.chip.pos { color: var(--green); }
+.chip.neg { color: var(--red); }
+
+/* ── боковая панель ── */
+.side-title { margin: 0 0 12px; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.stat { margin-bottom: 14px; }
+.stat-row { display: flex; justify-content: space-between; font-size: .92rem; margin-bottom: 4px; }
+.bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.bar .fill { height: 100%; }
+.bar.faith .fill { background: var(--amber); }
+.bar.stability .fill { background: var(--teal); }
+.pair { display: flex; gap: 20px; font-size: .92rem; }
+.pair strong { color: var(--amber); }
+
+.followers { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.followers li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.fname { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.traits { display: block; font-size: .82rem; color: var(--muted); }
+
+/* ── редактор имён ── */
+.editor { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.edit { width: min(240px, 100%); min-width: 0; padding: 6px 10px; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--amber); border-radius: 8px; }
+.mini { padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card-2); color: var(--text); cursor: pointer; font-size: .85rem; }
+.err { flex-basis: 100%; color: var(--red); font-size: .85rem; font-weight: 400; font-family: var(--sans); }
